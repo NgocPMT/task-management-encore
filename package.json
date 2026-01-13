@@ -12,6 +12,8 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "better-auth": "^1.4.10",
+    "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "encore.dev": "^1.53.4",
     "pg": "^8.16.3"

@@ -1,12 +1,6 @@
-import { api } from "encore.dev/api";
+import { api, APIError } from "encore.dev/api";
 import { auth } from "./lib/better-auth";
-import log from "encore.dev/log";
-
-interface SignUpRequest {
-  email: string;
-  password: string;
-  name: string;
-}
+import { SignInSchema, SignUpSchema } from "./auth.schema";
 
 interface AuthResponse {
   user: {
@@ -22,10 +16,16 @@ interface AuthResponse {
 
 export const signUp = api(
   { path: "/v1/auth/register", method: "POST", expose: true },
-  async (req: SignUpRequest): Promise<AuthResponse> => {
-    const { email, name, password } = req;
+  async (req: unknown): Promise<AuthResponse> => {
+    const parsedResult = SignUpSchema.safeParse(req);
 
-    log.info("User signup attempt", { email });
+    if (!parsedResult.success) {
+      throw APIError.invalidArgument(
+        `Invalid request: \n${parsedResult.error.issues}`
+      );
+    }
+
+    const { email, password, name } = parsedResult.data;
 
     const result = await auth.api.signUpEmail({
       body: {
@@ -36,7 +36,7 @@ export const signUp = api(
     });
 
     if (!result.user || !result.token) {
-      throw new Error("Failed to create user");
+      throw APIError.internal("Auth service failed to create user");
     }
 
     return {
@@ -53,15 +53,18 @@ export const signUp = api(
   }
 );
 
-interface SignInRequest {
-  email: string;
-  password: string;
-}
-
 export const signIn = api(
   { path: "/v1/auth/login", method: "POST", expose: true },
-  async (req: SignInRequest): Promise<AuthResponse> => {
-    const { email, password } = req;
+  async (req: unknown): Promise<AuthResponse> => {
+    const parsedResult = SignInSchema.safeParse(req);
+
+    if (!parsedResult.success) {
+      throw APIError.invalidArgument(
+        `Invalid request: \n${parsedResult.error.issues}`
+      );
+    }
+
+    const { email, password } = parsedResult.data;
 
     const result = await auth.api.signInEmail({
       body: {
@@ -71,7 +74,7 @@ export const signIn = api(
     });
 
     if (!result.user || !result.token) {
-      throw new Error("Invalid credentials");
+      throw APIError.unauthenticated("Invalid credentials");
     }
 
     return {

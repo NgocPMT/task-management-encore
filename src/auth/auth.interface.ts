@@ -9,3 +9,15 @@ export interface AuthData {
   email: string;
   name: string;
 }
+
+export interface SignUpDTO {
+  email: string;
+  name: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface SignInDTO {
+  email: string;
+  password: string;
+}

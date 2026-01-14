@@ -1,19 +1,10 @@
-import { Header, APIError, Gateway } from "encore.dev/api";
+import { APIError, Gateway } from "encore.dev/api";
 import { authHandler } from "encore.dev/auth";
 import log from "encore.dev/log";
 import { db } from "../database";
 import { session, user } from "../schema";
 import { eq } from "drizzle-orm";
-
-interface AuthParams {
-  authorization: Header<"Authorization">;
-}
-
-interface AuthData {
-  userID: string;
-  email: string;
-  name: string;
-}
+import { AuthData, AuthParams } from "./auth.interface";
 
 const myAuthHandler = authHandler(
   async (params: AuthParams): Promise<AuthData> => {

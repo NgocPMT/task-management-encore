@@ -34,7 +34,7 @@ export const readByOrg = api(
 );
 
 export const readOne = api(
-  { expose: true, method: "GET", path: "/v1/tasks/:id" },
+  { expose: true, auth: true, method: "GET", path: "/v1/tasks/:id" },
   async (req: { id: string }) => {
     const result = TaskIdParamSchema.safeParse(req.id);
 
@@ -57,7 +57,7 @@ export const readOne = api(
 );
 
 export const create = api(
-  { expose: true, method: "POST", path: "/v1/tasks/create" },
+  { expose: true, auth: true, method: "POST", path: "/v1/tasks/create" },
   async (req: CreateTaskDTO) => {
     const result = CreateTaskSchema.safeParse(req);
 
@@ -79,7 +79,7 @@ export const create = api(
 );
 
 export const update = api(
-  { expose: true, method: "PUT", path: "/v1/tasks/:id" },
+  { expose: true, auth: true, method: "PUT", path: "/v1/tasks/:id" },
   async (req: { id: string; body: UpdateTaskDTO }) => {
     const paramResult = TaskIdParamSchema.safeParse(req.id);
     const bodyResult = UpdateTaskSchema.safeParse(req.body);
@@ -113,7 +113,7 @@ export const update = api(
 );
 
 export const destroy = api(
-  { expose: true, method: "DELETE", path: "/v1/tasks/:id" },
+  { expose: true, auth: true, method: "DELETE", path: "/v1/tasks/:id" },
   async (req: { id: string }) => {
     const result = TaskIdParamSchema.safeParse(req.id);
 

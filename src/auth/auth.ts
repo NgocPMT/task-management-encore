@@ -1,6 +1,7 @@
 import { api, APIError } from "encore.dev/api";
 import { auth } from "./lib/better-auth";
 import { SignInSchema, SignUpSchema } from "./auth.schema";
+import { SignInDTO, SignUpDTO } from "./auth.interface";
 
 interface AuthResponse {
   user: {
@@ -16,7 +17,7 @@ interface AuthResponse {
 
 export const signUp = api(
   { path: "/v1/auth/register", method: "POST", expose: true },
-  async (req: unknown): Promise<AuthResponse> => {
+  async (req: SignUpDTO): Promise<AuthResponse> => {
     const parsedResult = SignUpSchema.safeParse(req);
 
     if (!parsedResult.success) {
@@ -55,7 +56,7 @@ export const signUp = api(
 
 export const signIn = api(
   { path: "/v1/auth/login", method: "POST", expose: true },
-  async (req: unknown): Promise<AuthResponse> => {
+  async (req: SignInDTO): Promise<AuthResponse> => {
     const parsedResult = SignInSchema.safeParse(req);
 
     if (!parsedResult.success) {
